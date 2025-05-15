@@ -1,7 +1,7 @@
 from rest_framework import viewsets
-from .models import Item
-from .serializers import ItemSerializer
+from .models import User_profile
+from .serializers import UserSerializer
 
-class ItemViewSet(viewsets.ModelViewSet):
-    queryset = Item.objects.all()
-    serializer_class = ItemSerializer
+class UserViewSet(viewsets.ModelViewSet):
+    queryset = User_profile.objects.all()
+    serializer_class = UserSerializer
