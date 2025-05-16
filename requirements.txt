@@ -1,0 +1,8 @@
+Django>=4.2,<5.0
+djangorestframework
+Pillow
+gunicorn
+whitenoise
+python-decouple
+django-cors-headers
+django-filter
