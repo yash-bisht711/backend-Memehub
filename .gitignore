@@ -13,11 +13,11 @@ env/
 # Django
 # db.sqlite3
 # media/
-# staticfiles/
-# *.pot
-# *.pyc
-# *.pyo
-# *.pyd
+staticfiles/
+*.pot
+*.pyc
+*.pyo
+*.pyd
 
 # VSCode / PyCharm
 .vscode/
