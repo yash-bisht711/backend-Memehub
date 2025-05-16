@@ -1,6 +1,7 @@
 import uuid
 from django.db import models
 
+
 class User_profile(models.Model):
     email = models.EmailField(primary_key=True)
     name = models.CharField(max_length=100)
@@ -23,8 +24,12 @@ class Post(models.Model):
     post_image = models.ImageField(upload_to='posts/')
     up_vote = models.PositiveIntegerField(default=0)
     down_vote = models.PositiveIntegerField(default=0)
-    # comments = models.TextField(blank=True)
-    created_by = models.ForeignKey(User_profile, on_delete=models.CASCADE, to_field='email', related_name='posts')
+    created_by = models.ForeignKey(
+        User_profile,
+        on_delete=models.CASCADE,
+        to_field='email',
+        related_name='posts'
+    )
     description = models.TextField(blank=True)
     tags = models.CharField(max_length=255, blank=True, help_text="Comma-separated tags")
 
@@ -33,11 +38,16 @@ class Post(models.Model):
 
 
 class Comment(models.Model):
-    id = models.AutoField(primary_key=True)
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     post = models.ForeignKey(Post, on_delete=models.CASCADE, related_name='comments')
-    author = models.ForeignKey(User_profile, on_delete=models.CASCADE, to_field='email', related_name='comments')
+    author = models.ForeignKey(
+        User_profile,
+        on_delete=models.CASCADE,
+        to_field='email',
+        related_name='comments'
+    )
     text = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return f"Comment by {self.author.email} on {self.post.id}"
+        return f"Comment by {self.author.email} on {self.post.id}: {self.text[:30]}..."
