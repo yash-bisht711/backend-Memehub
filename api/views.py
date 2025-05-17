@@ -13,6 +13,13 @@ class UserViewSet(viewsets.ModelViewSet):
     queryset = User_profile.objects.all()
     serializer_class = UserSerializer
     
+    @action(detail=False, methods=['get'], url_path='by-user/(?P<email>.+)')
+    def get_user_by_email(self, request, email=None):
+        """Get User by Email"""
+        user = get_object_or_404(User_profile, email=email)
+        serializer = self.get_serializer(user)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+    
 
 class PostViewSet(viewsets.ModelViewSet):
     queryset = Post.objects.all().order_by('-timestamp')
@@ -56,13 +63,13 @@ class PostViewSet(viewsets.ModelViewSet):
         serializer = self.get_serializer(post)
         return Response(serializer.data)
 
-    @action(detail=False, methods=['get'], url_path='by-user/(?P<email>[^/.]+)')
+    @action(detail=False, methods=['get'], url_path='by-user/(?P<email>.+)')
     def get_posts_by_user(self, request, email=None):
         """Get posts created by a user (by email)"""
         user = get_object_or_404(User_profile, email=email)
         posts = Post.objects.filter(created_by=user).order_by('-timestamp')
         serializer = self.get_serializer(posts, many=True)
-        return Response(serializer.data)
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
 
 class CommentViewSet(viewsets.ModelViewSet):
