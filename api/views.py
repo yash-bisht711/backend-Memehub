@@ -1,6 +1,8 @@
 from rest_framework import viewsets
 from rest_framework.decorators import action
 from rest_framework.response import Response
+from rest_framework import status
+from django.shortcuts import get_object_or_404
 from django.utils import timezone
 from datetime import timedelta
 from .models import User_profile, Post, Comment
@@ -44,6 +46,21 @@ class PostViewSet(viewsets.ModelViewSet):
     def top_all(self, request):
         """Top posts of all time"""
         posts = Post.objects.all().order_by('-up_vote')
+        serializer = self.get_serializer(posts, many=True)
+        return Response(serializer.data)
+    
+    @action(detail=False, methods=['get'], url_path='by-id/(?P<post_id>[^/.]+)')
+    def get_post_by_id(self, request, post_id=None):
+        """Get post by UUID"""
+        post = get_object_or_404(Post, id=post_id)
+        serializer = self.get_serializer(post)
+        return Response(serializer.data)
+
+    @action(detail=False, methods=['get'], url_path='by-user/(?P<email>[^/.]+)')
+    def get_posts_by_user(self, request, email=None):
+        """Get posts created by a user (by email)"""
+        user = get_object_or_404(User_profile, email=email)
+        posts = Post.objects.filter(created_by=user).order_by('-timestamp')
         serializer = self.get_serializer(posts, many=True)
         return Response(serializer.data)
 
