@@ -70,6 +70,38 @@ class PostViewSet(viewsets.ModelViewSet):
         posts = Post.objects.filter(created_by=user).order_by('-timestamp')
         serializer = self.get_serializer(posts, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
+    
+    @action(detail=True, methods=['put', 'patch'])
+    def update_post(self, request, pk=None):
+        """Update a post by its ID (UUID)"""
+        post = get_object_or_404(Post, id=pk)
+        serializer = self.get_serializer(post, data=request.data, partial=True)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response(serializer.data, status=status.HTTP_200_OK)
+    
+    @action(detail=False, methods=['put', 'patch'], url_path='update-by-id/(?P<post_id>[^/.]+)')
+    def update_post_by_id(self, request, post_id=None):
+        """Update a post by its ID (UUID)"""
+        post = get_object_or_404(Post, id=post_id)
+        serializer = self.get_serializer(post, data=request.data, partial=True)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+    @action(detail=True, methods=['delete'])
+    def delete_post(self, request, pk=None):
+        """Delete a post by its ID (UUID)"""
+        post = get_object_or_404(Post, id=pk)
+        post.delete()
+        return Response({'detail': 'Post deleted.'}, status=status.HTTP_204_NO_CONTENT)
+
+    @action(detail=False, methods=['delete'], url_path='delete-by-id/(?P<post_id>[^/.]+)')
+    def delete_post_by_id(self, request, post_id=None):
+        """Delete a post by its ID (UUID)"""
+        post = get_object_or_404(Post, id=post_id)
+        post.delete()
+        return Response({'detail': 'Post deleted.'}, status=status.HTTP_204_NO_CONTENT)
 
 
 class CommentViewSet(viewsets.ModelViewSet):
