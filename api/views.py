@@ -75,3 +75,10 @@ class PostViewSet(viewsets.ModelViewSet):
 class CommentViewSet(viewsets.ModelViewSet):
     queryset = Comment.objects.all().order_by('-created_at')
     serializer_class = CommentSerializer
+    
+    @action(detail=False, methods=['get'], url_path=r'by-post/(?P<post_id>[0-9a-f-]+)')
+    def get_comments_by_post(self, request, post_id=None):
+        post = get_object_or_404(Post, id=post_id)
+        comments = Comment.objects.filter(post=post).order_by('-created_at')
+        serializer = self.get_serializer(comments, many=True)
+        return Response(serializer.data)
