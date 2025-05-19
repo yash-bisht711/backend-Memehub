@@ -115,12 +115,6 @@ The API will be available at `http://127.0.0.1:8000/api/`.
 - If a user does not upload a profile picture, an avatar is automatically generated using the Dicebear API.
 - The avatar is saved to the profile_picture field on first save.
 
---
-
-## 📃 License
-
-This project is licensed under the MIT License.
-
 ---
 
 ## 🙌 Contributing
